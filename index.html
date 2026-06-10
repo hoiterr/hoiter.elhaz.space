@@ -1,0 +1,412 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Algimantas Stuopelis — RevOps & AI-Built Systems</title>
+<meta name="description" content="Marketing & Revenue Operations manager who ships full-stack internal tools with AI coding agents. Vilnius, Lithuania.">
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' fill='%23dde6f3'/%3E%3Crect x='3' y='3' width='58' height='58' fill='none' stroke='%232545d3' stroke-width='4'/%3E%3Ctext x='32' y='43' font-family='monospace' font-size='30' font-weight='bold' fill='%232545d3' text-anchor='middle'%3EAS%3C/text%3E%3C/svg%3E">
+<meta name="theme-color" content="#dde6f3">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Algimantas Stuopelis — Idea → System → Result.">
+<meta property="og:description" content="RevOps manager who takes ideas to working results — GTM automation, AI-agent-built tools, and teams that run. Case studies inside.">
+<meta property="og:url" content="https://elhaz.space/">
+<meta property="og:image" content="https://elhaz.space/assets/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@600;800&family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;1,6..72,400&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{
+  --paper:#dde6f3;
+  --paper-2:#d4dff0;
+  --ink:#2545d3;          /* cobalt */
+  --ink-soft:#4a63c9;     /* serif body blue */
+  --ink-faint:#8fa3d6;
+  --rule:#b3c2e2;
+  --maroon:#641f3c;
+  --maroon-text:#f2d9e2;
+  --cyan:#19b9d4;
+  --display:"Archivo",system-ui,sans-serif;
+  --serif:"Newsreader",Georgia,serif;
+  --mono:"IBM Plex Mono",ui-monospace,monospace;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{
+  background:var(--paper);
+  color:var(--ink);
+  font-family:var(--serif);
+  font-size:17px;
+  line-height:1.6;
+  -webkit-font-smoothing:antialiased;
+  position:relative;
+}
+/* paper grain */
+body::before{
+  content:"";position:fixed;inset:0;pointer-events:none;z-index:1;opacity:.65;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='240' height='240'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2'/%3E%3CfeColorMatrix values='0 0 0 0 0.55 0 0 0 0 0.62 0 0 0 0 0.8 0 0 0 0.36 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+.frame{position:relative;z-index:2;max-width:1500px;margin:28px auto;border:1px solid var(--rule);background:transparent}
+@media(max-width:1560px){.frame{margin:18px}}
+::selection{background:var(--ink);color:var(--paper)}
+a{color:inherit}
+
+/* ---------- type utilities ---------- */
+.label{
+  font-family:var(--mono);
+  font-size:13px;letter-spacing:.32em;text-transform:uppercase;font-weight:500;
+}
+.label-sm{font-family:var(--mono);font-size:11px;letter-spacing:.26em;text-transform:uppercase}
+
+/* ---------- nav ---------- */
+nav{display:grid;grid-template-columns:1.2fr 1fr 1fr 1fr 1fr;border-bottom:1px solid var(--rule)}
+nav>*{padding:26px 28px;border-right:1px solid var(--rule)}
+nav>*:last-child{border-right:none}
+.brand{font-family:var(--display);font-weight:800;font-size:26px;line-height:1.02;letter-spacing:.01em;text-transform:uppercase;text-decoration:none;display:block}
+.nav-link{display:flex;align-items:center;text-decoration:none;color:var(--ink);transition:color .15s}
+.nav-link:hover,.nav-link:focus-visible{color:var(--cyan)}
+@media(max-width:880px){
+  nav{grid-template-columns:1fr 1fr;}
+  nav>*{padding:16px 18px}
+  .brand-cell{grid-column:1/-1;border-bottom:1px solid var(--rule)}
+}
+
+/* ---------- hero ---------- */
+.hero{padding:96px 24px 80px;text-align:center;border-bottom:1px solid var(--rule);position:relative;overflow:hidden}
+.hero .label{color:var(--ink-soft);display:inline-flex;align-items:center;gap:14px}
+.hero .label::before,.hero .label::after{content:"";width:5px;height:5px;background:var(--ink-soft);display:inline-block}
+h1{
+  font-family:var(--display);font-weight:800;text-transform:uppercase;
+  font-size:clamp(42px,6.2vw,84px);line-height:1.0;letter-spacing:.005em;
+  margin:26px auto 30px;max-width:14ch;
+}
+.hero-sub{font-family:var(--serif);font-size:20px;line-height:1.65;color:var(--ink-soft);max-width:56ch;margin:0 auto}
+.hero-sub strong{font-weight:500;color:var(--ink)}
+
+/* command blocks */
+.cmds{max-width:640px;margin:54px auto 0;text-align:left}
+.cmd-row{margin-bottom:26px}
+.cmd-head{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:8px}
+.cmd-head .label{font-size:12px;letter-spacing:.28em}
+.copy-btn{font-family:var(--mono);font-size:11px;letter-spacing:.18em;text-transform:uppercase;color:var(--ink-faint);background:none;border:none;cursor:pointer;transition:color .15s}
+.copy-btn:hover{color:var(--ink)}
+.cmd-line{border:1px solid var(--rule);padding:9px 12px;font-family:var(--mono);font-size:14px;color:var(--ink-soft)}
+.cmd-line mark{background:var(--maroon);color:var(--maroon-text);padding:2px 6px}
+
+/* ---------- section scaffolding ---------- */
+section{border-bottom:1px solid var(--rule)}
+.sec-title{padding:26px 28px 22px}
+.sec-title h2{
+  font-family:var(--display);font-weight:800;font-size:24px;letter-spacing:.12em;
+  text-transform:uppercase;color:var(--ink);
+}
+
+/* ---------- terminal demo ---------- */
+.demo{display:grid;grid-template-columns:1.15fr .85fr}
+@media(max-width:880px){.demo{grid-template-columns:1fr}}
+.demo-left{padding:0 28px 40px}
+.term{
+  border:1px solid var(--ink);outline:2px solid var(--ink);outline-offset:3px;
+  background:rgba(255,255,255,.25);min-height:300px;
+}
+.term-bar{display:flex;align-items:center;gap:8px;padding:12px 16px;border-bottom:1px solid var(--rule)}
+.dot{width:9px;height:9px;border-radius:50%;background:var(--ink-faint)}
+.dot:first-child{background:var(--ink)}
+.term-title{margin-left:10px;font-family:var(--mono);font-size:11px;letter-spacing:.22em;color:var(--ink-soft)}
+.term-body{padding:20px;font-family:var(--mono);font-size:13.5px;line-height:2;color:var(--ink-soft)}
+.t-prompt{color:var(--ink)}
+.t-out{color:var(--ink-faint)}
+.cursor{display:inline-block;width:8px;height:15px;background:var(--ink);vertical-align:-2px;animation:blink 1.05s steps(1) infinite}
+@keyframes blink{50%{opacity:0}}
+.demo-right{border-left:1px solid var(--rule);position:relative;min-height:300px;display:flex;align-items:flex-end;justify-content:flex-end;padding:24px}
+@media(max-width:880px){.demo-right{display:none}}
+.demo-right svg{position:absolute;inset:0;width:100%;height:100%;opacity:.5}
+.demo-tag{position:relative;font-family:var(--mono);font-size:12px;letter-spacing:.3em;text-transform:uppercase;color:var(--cyan)}
+
+/* ---------- features grid ---------- */
+.feat-grid{display:grid;grid-template-columns:repeat(3,1fr);border-top:1px solid var(--rule)}
+@media(max-width:980px){.feat-grid{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:620px){.feat-grid{grid-template-columns:1fr}}
+.feat{padding:30px 28px;border-right:1px solid var(--rule);border-bottom:1px solid var(--rule)}
+.feat:nth-child(3n){border-right:none}
+@media(max-width:980px){.feat:nth-child(3n){border-right:1px solid var(--rule)}.feat:nth-child(2n){border-right:none}}
+@media(max-width:620px){.feat{border-right:none!important}}
+.feat h3{font-family:var(--mono);font-weight:500;font-size:14px;letter-spacing:.28em;text-transform:uppercase;margin-bottom:12px}
+.feat p{font-family:var(--serif);font-size:16.5px;color:var(--ink-soft);line-height:1.62}
+
+/* ---------- projects ---------- */
+.proj{display:grid;grid-template-columns:280px 1fr;border-top:1px solid var(--rule)}
+@media(max-width:880px){.proj{grid-template-columns:1fr}}
+.proj-side{padding:30px 28px;border-right:1px solid var(--rule);font-family:var(--mono);font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-soft);line-height:2.2}
+@media(max-width:880px){.proj-side{border-right:none;border-bottom:1px solid var(--rule);padding-bottom:18px}}
+.proj-side b{color:var(--ink);font-weight:500;display:block;font-size:13px;letter-spacing:.24em}
+.proj-main{padding:30px 32px 36px}
+.proj-main h3{font-family:var(--display);font-weight:800;font-size:26px;letter-spacing:.04em;text-transform:uppercase;margin-bottom:16px}
+.proj-main p{color:var(--ink-soft);max-width:68ch;margin-bottom:12px}
+.proj-main p b{font-family:var(--mono);font-weight:500;font-size:12px;letter-spacing:.22em;text-transform:uppercase;color:var(--ink);margin-right:8px}
+.chips{margin-top:18px;display:flex;flex-wrap:wrap;gap:0}
+.chip{font-family:var(--mono);font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--ink-soft);border:1px solid var(--rule);padding:6px 14px;margin:-1px 0 0 -1px}
+.case-link{display:inline-block;margin-top:20px;font-family:var(--mono);font-size:12px;letter-spacing:.22em;text-transform:uppercase;text-decoration:none;color:var(--ink);border:1px solid var(--ink);padding:10px 18px;transition:background .15s,color .15s}
+.case-link:hover,.case-link:focus-visible{background:var(--ink);color:var(--paper)}
+.proj-note{padding:18px 28px;font-family:var(--mono);font-size:11px;letter-spacing:.2em;text-transform:uppercase;color:var(--ink-faint);border-top:1px solid var(--rule)}
+
+/* ---------- experience table ---------- */
+.xp-row{display:grid;grid-template-columns:280px 1fr;border-top:1px solid var(--rule)}
+.xp-row:first-of-type{border-top:none}
+@media(max-width:880px){.xp-row{grid-template-columns:1fr}}
+.xp-label{padding:24px 28px;font-family:var(--mono);font-size:13px;letter-spacing:.26em;text-transform:uppercase;border-right:1px solid var(--rule)}
+@media(max-width:880px){.xp-label{border-right:none;padding-bottom:4px}}
+.xp-body{padding:24px 32px;color:var(--ink-soft)}
+.xp-body .role{color:var(--ink);font-weight:500}
+.xp-body .yrs{font-family:var(--mono);font-size:12px;letter-spacing:.14em;color:var(--ink-faint);margin-left:10px}
+
+/* ---------- contact / footer ---------- */
+.contact{padding:80px 24px;text-align:center}
+.contact h2{font-family:var(--display);font-weight:800;font-size:clamp(30px,4.4vw,54px);letter-spacing:.02em;text-transform:uppercase;max-width:22ch;margin:0 auto 36px}
+.contact h2 span{color:var(--maroon)}
+.btn-row{display:flex;justify-content:center;flex-wrap:wrap;gap:14px}
+.btn{font-family:var(--mono);font-size:13px;letter-spacing:.22em;text-transform:uppercase;text-decoration:none;padding:14px 26px;border:1px solid var(--ink);transition:background .15s,color .15s}
+.btn:hover,.btn:focus-visible{background:var(--ink);color:var(--paper)}
+.btn.primary{background:var(--maroon);border-color:var(--maroon);color:var(--maroon-text)}
+.btn.primary:hover{background:#7a2849}
+.foot{display:grid;grid-template-columns:1fr 1fr 1fr 1fr;border-top:1px solid var(--rule)}
+.foot>*{padding:20px 28px;border-right:1px solid var(--rule);font-family:var(--mono);font-size:12px;letter-spacing:.22em;text-transform:uppercase;color:var(--ink-soft);text-decoration:none;display:block}
+.foot>*:last-child{border-right:none;text-align:right}
+.foot a:hover{color:var(--cyan)}
+@media(max-width:880px){.foot{grid-template-columns:1fr 1fr}.foot>*{padding:14px 18px}}
+
+@media(prefers-reduced-motion:reduce){.cursor{animation:none}}
+:focus-visible{outline:2px solid var(--ink);outline-offset:2px}
+</style>
+</head>
+<body>
+<div class="frame">
+
+<nav>
+  <div class="brand-cell"><a class="brand" href="#top">Algimantas<br>Stuopelis</a></div>
+  <a class="nav-link label scramble" href="#capabilities" data-text="Capabilities">Capabilities</a>
+  <a class="nav-link label scramble" href="#projects" data-text="Projects">Projects</a>
+  <a class="nav-link label scramble" href="#experience" data-text="Experience">Experience</a>
+  <a class="nav-link label scramble" href="#contact" data-text="Contact">Contact</a>
+</nav>
+
+<header class="hero" id="top">
+  <span class="label">RevOps · Vilnius · UTC+2</span>
+  <h1>Idea → System → Result.</h1>
+  <p class="hero-sub"><strong>Marketing &amp; Revenue Operations manager</strong> — five years and five roles at CAST AI, from Customer Success to MOps Manager. I'm the person between a vague idea and a working result: I think the problem through, design the system, and see it shipped — whether that means GTM automation, an internal tool built by <strong>directing AI coding agents</strong>, or a team that knows what it's doing and why.</p>
+
+  <div class="cmds">
+    <div class="cmd-row">
+      <div class="cmd-head"><span class="label">1. Review</span><a class="copy-btn" href="Algimantas_Stuopelis_CV.pdf" target="_blank" rel="noopener" style="text-decoration:none">Open ↗</a></div>
+      <div class="cmd-line"><mark>open ./Algimantas_Stuopelis_CV.pdf</mark></div>
+    </div>
+    <div class="cmd-row">
+      <div class="cmd-head"><span class="label">2. Contact</span><button class="copy-btn" data-copy="AL@elhaz.space">Copy</button></div>
+      <div class="cmd-line"><mark>mail AL@elhaz.space</mark></div>
+    </div>
+  </div>
+</header>
+
+<section>
+  <div class="sec-title"><h2 class="scramble" data-text="See It In Action">See It In Action</h2></div>
+  <div class="demo">
+    <div class="demo-left">
+      <div class="term">
+        <div class="term-bar">
+          <span class="dot"></span><span class="dot"></span><span class="dot"></span>
+          <span class="term-title">Algimantas</span>
+        </div>
+        <div class="term-body" id="term"></div>
+      </div>
+    </div>
+    <div class="demo-right">
+      <svg viewBox="0 0 400 300" xmlns="http://www.w3.org/2000/svg" fill="none" stroke="#2545d3" stroke-width="1" aria-hidden="true">
+        <circle cx="110" cy="210" r="62"/><circle cx="110" cy="210" r="44"/>
+        <circle cx="290" cy="210" r="62"/><circle cx="290" cy="210" r="44"/>
+        <path d="M110 210 L165 120 L250 120 L290 210 M165 120 L200 210 L110 210 M200 210 L250 120 M250 112 L250 96 L268 92 M157 120 L143 98 L122 98"/>
+        <path d="M196 214 a6 6 0 1 0 8 0"/>
+      </svg>
+      <span class="demo-tag">Fig. 01 — Operator</span>
+    </div>
+  </div>
+</section>
+
+<section id="capabilities">
+  <div class="sec-title"><h2 class="scramble" data-text="Capabilities">Capabilities</h2></div>
+  <div class="feat-grid">
+    <div class="feat"><h3>GTM Automation</h3><p>Lead routing, scoring, and lifecycle automation across HubSpot and Salesforce — built to remove busywork, not add tools.</p></div>
+    <div class="feat"><h3>Attribution &amp; Signals</h3><p>Attribution models built on product-interest signals, so sales talks to the right people at the right moment.</p></div>
+    <div class="feat"><h3>AI-Directed Development</h3><p>Full-stack apps shipped with AI coding agents. I own the architecture, data flow, and product decisions end-to-end.</p></div>
+    <div class="feat"><h3>Integration Debugging</h3><p>When a sync silently fails, I find it — API payloads, network layer, proxies, webhooks. Systems-level, not guesswork.</p></div>
+    <div class="feat"><h3>Pipelines &amp; Dashboards</h3><p>Real-time data pipelines feeding dashboards people actually open. Telemetry in, decisions out.</p></div>
+    <div class="feat"><h3>People &amp; Enablement</h3><p>Led 30+ person support teams. Onboarding programs, training, documentation — and migrations like moving a sales org to Outreach.io in one week with zero downtime.</p></div>
+  </div>
+</section>
+
+<section id="projects">
+  <div class="sec-title"><h2 class="scramble" data-text="Projects">Projects</h2></div>
+
+  <article class="proj">
+    <div class="proj-side"><b>2025 — 2026</b>Personal Project<br>Full-Stack · In Use</div>
+    <div class="proj-main">
+      <h3>moniHZ — Live Fleet Telemetry</h3>
+      <p><b>Problem</b>33 unattended game clients on one machine, zero cross-client visibility — rare events missed, dead instances indistinguishable from quiet ones.</p>
+      <p><b>Build</b>A Node.js/Express server ingesting every client's events into one reconciled log, streamed live to a React 19 dashboard over SSE. Time-windowed cross-source deduplication keeps the stats truthful; Discord webhooks push rare-event and health alerts; clients pick up config changes through a heartbeat endpoint.</p>
+      <p><b>Outcome</b>One screen replacing manual check-ins — ~5,800 lines of TypeScript, 15+ endpoints, the fleet supervises itself.</p>
+      <div class="chips"><span class="chip">React 19</span><span class="chip">TypeScript</span><span class="chip">Node.js</span><span class="chip">Express</span><span class="chip">SSE</span><span class="chip">Discord API</span></div>
+      <a class="case-link" href="projects/monihz.html">Read Case Study →</a>
+    </div>
+  </article>
+
+  <article class="proj">
+    <div class="proj-side"><b>2025 — 2026</b>Personal Project<br>Desktop · Rust · Working</div>
+    <div class="proj-main">
+      <h3>moniRAM — Desktop Session Manager</h3>
+      <p><b>Problem</b>Staging and supervising dozens of client sessions on one Windows machine — credentials, launch queues, and process tracking — on top of a legacy app too heavy to maintain.</p>
+      <p><b>Build</b>A ground-up rebuild of a ~27,700-line .NET/WPF app into a Tauri 2 + Rust port with a deliberately smaller surface: DPAPI-encrypted credential vault in SQLite, a single command bridge, file-backed session state, and a test suite that fails the build if legacy modules creep back in.</p>
+      <p><b>Outcome</b>107 Rust tests and 57 Playwright tests green — the port's limits are a build contract, not a promise.</p>
+      <div class="chips"><span class="chip">Rust</span><span class="chip">Tauri 2</span><span class="chip">React 18</span><span class="chip">.NET 8</span><span class="chip">SQLite</span><span class="chip">DPAPI</span></div>
+      <a class="case-link" href="projects/moniram.html">Read Case Study →</a>
+    </div>
+  </article>
+
+  <article class="proj">
+    <div class="proj-side"><b>2026</b>Personal Project<br>Web + Mobile · Prototype</div>
+    <div class="proj-main">
+      <h3>Bicycle Builder — Parts &amp; Compatibility</h3>
+      <p><b>Problem</b>Bike builds fail at the workbench: mismatched standards (BSA vs BB86, freehub bodies, brake mounts) discovered after the parts arrive.</p>
+      <p><b>Build</b>A Next.js 16 + Expo monorepo on Supabase Postgres with row-level security. A rule-driven compatibility engine compares canonical part specs stored as JSONB; a scraper pipeline normalizes 286 parts from six sources; selected parts derive their own workshop-tool requirements.</p>
+      <p><b>Outcome</b>Incompatibilities flagged before checkout — ~24,300 lines, 17 compatibility tests passing. Honest label: prototype.</p>
+      <div class="chips"><span class="chip">Next.js 16</span><span class="chip">Supabase</span><span class="chip">Postgres</span><span class="chip">Expo</span><span class="chip">TypeScript</span><span class="chip">Zod</span></div>
+      <a class="case-link" href="projects/bicycle-builder.html">Read Case Study →</a>
+    </div>
+  </article>
+
+  <article class="proj">
+    <div class="proj-side"><b>2025</b>Personal Project<br>Computer Vision · Working</div>
+    <div class="proj-main">
+      <h3>VelotFit AI</h3>
+      <p><b>Problem</b>Bike fit is expensive and opaque — riders buy frames on vibes, then pay to fix the consequences.</p>
+      <p><b>Build</b>A tool that combines manufacturer geometry data with the rider's body measurements to recommend sizing and fit adjustments. Includes AI video analysis of riding position and a simulator for testing angle changes before touching the bike.</p>
+      <p><b>Outcome</b>Data-backed fit recommendations from a browser, before money changes hands.</p>
+      <div class="chips"><span class="chip">AI Video Analysis</span><span class="chip">Geometry Modeling</span><span class="chip">Web App</span></div>
+    </div>
+  </article>
+
+  <div class="proj-note">All personal projects — architecture &amp; debugging by me, keystrokes by AI coding agents. Screenshots redacted for privacy.</div>
+</section>
+
+<section id="experience">
+  <div class="sec-title"><h2 class="scramble" data-text="Experience">Experience</h2></div>
+  <div class="xp-row"><div class="xp-label">CAST AI</div><div class="xp-body"><span class="role">Marketing Operations Manager</span><span class="yrs">2025 – 2026</span><br>Attribution modeling on product-interest signals, advanced lead routing, webinar workflow redesign cutting prep time 30%+.</div></div>
+  <div class="xp-row"><div class="xp-label">CAST AI</div><div class="xp-body"><span class="role">Marketing Operations Analyst</span><span class="yrs">2024 – 2025</span><br>Lead scoring rebuild (+17% lead-to-opportunity conversion), lead-stage automation, one-week Outreach.io migration.</div></div>
+  <div class="xp-row"><div class="xp-label">CAST AI</div><div class="xp-body"><span class="role">Sales Operations Analyst</span><span class="yrs">2022 – 2024</span><br>Salesforce reporting and flows, inbound routing logic in LeanData, pipeline analysis with sales leadership.</div></div>
+  <div class="xp-row"><div class="xp-label">CAST AI</div><div class="xp-body"><span class="role">Demand Generation · Customer Success</span><span class="yrs">2020 – 2022</span><br>Early-stage hire; grew with the company from CS into go-to-market operations.</div></div>
+  <div class="xp-row"><div class="xp-label">Tesonet</div><div class="xp-body"><span class="role">CS Operations Manager · Team Lead</span><span class="yrs">2017 – 2020</span><br>Led a 30+ person support operation for major consumer VPN &amp; cybersecurity products — 94% CSAT, sub-1:30 response times.</div></div>
+</section>
+
+<section class="contact" id="contact">
+  <h2>Need someone to think it through <span>and</span> see it shipped?</h2>
+  <div class="btn-row">
+    <a class="btn primary" href="mailto:AL@elhaz.space">Email Me</a>
+    <a class="btn" href="https://www.linkedin.com/in/a-stuopelis/" target="_blank" rel="noopener">LinkedIn ↗</a>
+    <a class="btn" href="Algimantas_Stuopelis_CV.pdf" download>Download CV</a>
+  </div>
+</section>
+
+<div class="foot">
+  <span>Algimantas Stuopelis</span>
+  <span>Vilnius · UTC+2</span>
+  <span>Built with AI agents</span>
+  <span>© 2026</span>
+</div>
+
+</div>
+
+<script>
+/* decrypt-scramble hover (and once on load for nav) */
+(function(){
+  var GLYPHS="ABCDEFGHIJKLMNOPQRSTUVWXYZ#%&@$0123456789";
+  var reduce=window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  function scramble(el){
+    if(reduce)return;
+    var orig=el.dataset.text||el.textContent;
+    el.dataset.text=orig;
+    if(el._iv)clearInterval(el._iv);
+    var frame=0,steps=orig.length+6;
+    el._iv=setInterval(function(){
+      var out="";
+      for(var i=0;i<orig.length;i++){
+        if(orig[i]===" "){out+=" ";continue;}
+        out+= i<frame-3 ? orig[i] : GLYPHS[Math.floor(Math.random()*GLYPHS.length)];
+      }
+      el.textContent=out;
+      frame++;
+      if(frame>steps){clearInterval(el._iv);el.textContent=orig;}
+    },34);
+  }
+  document.querySelectorAll(".scramble, h1, .feat h3, .proj-main h3").forEach(function(el){
+    el.dataset.text=el.textContent;
+    el.addEventListener("mouseenter",function(){scramble(el);});
+    el.addEventListener("focus",function(){scramble(el);});
+  });
+  /* play once on load for nav links, staggered */
+  if(!reduce){
+    document.querySelectorAll("nav .scramble").forEach(function(el,i){
+      setTimeout(function(){scramble(el);},300+i*140);
+    });
+  }
+})();
+
+/* terminal typing */
+(function(){
+  var lines=[
+    {cmd:"whoami",out:"algimantas — revops · gtm systems · vilnius"},
+    {cmd:"ls ./stack",out:"hubspot  salesforce  zapier  outreach  leandata"},
+    {cmd:"cat ./method",out:"i design & debug the systems — ai agents do the typing"},
+    {cmd:"ls ./projects",out:"monihz/  moniram/  bicycle-builder/  velotfit/"},
+    {cmd:"status --availability",out:"open to: revops / gtm engineering / ops leadership"}
+  ];
+  var el=document.getElementById("term");
+  var reduce=window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  function row(html){var d=document.createElement("div");d.innerHTML=html;el.appendChild(d);return d;}
+  if(reduce){
+    lines.forEach(function(l){
+      row('<span class="t-prompt">&gt; </span>'+l.cmd);
+      row('<span class="t-out">'+l.out+'</span>');
+    });
+    return;
+  }
+  var li=0;
+  function typeLine(){
+    if(li>=lines.length){row('<span class="t-prompt">&gt; </span><span class="cursor"></span>');return;}
+    var l=lines[li];
+    var r=row('<span class="t-prompt">&gt; </span><span class="cmd"></span><span class="cursor"></span>');
+    var cmdEl=r.querySelector(".cmd"),cur=r.querySelector(".cursor"),ci=0;
+    var iv=setInterval(function(){
+      cmdEl.textContent=l.cmd.slice(0,++ci);
+      if(ci>=l.cmd.length){
+        clearInterval(iv);cur.remove();
+        setTimeout(function(){
+          row('<span class="t-out">'+l.out+'</span>');
+          li++;setTimeout(typeLine,420);
+        },260);
+      }
+    },55);
+  }
+  setTimeout(typeLine,600);
+})();
+
+/* copy buttons */
+document.querySelectorAll(".copy-btn").forEach(function(b){
+  b.addEventListener("click",function(){
+    navigator.clipboard.writeText(b.dataset.copy).then(function(){
+      var t=b.textContent;b.textContent="Copied";
+      setTimeout(function(){b.textContent=t;},1400);
+    });
+  });
+});
+</script>
+</body>
+</html>

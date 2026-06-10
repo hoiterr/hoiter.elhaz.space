@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>moniRAM — Desktop Session Manager · Algimantas Stuopelis</title>
+<meta name="description" content="Case study: a Windows desktop fleet manager — legacy .NET/WPF app rebuilt as a Tauri 2 + Rust port with a deliberately constrained, test-enforced feature surface.">
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' fill='%23dde6f3'/%3E%3Crect x='3' y='3' width='58' height='58' fill='none' stroke='%232545d3' stroke-width='4'/%3E%3Ctext x='32' y='43' font-family='monospace' font-size='30' font-weight='bold' fill='%232545d3' text-anchor='middle'%3EAS%3C/text%3E%3C/svg%3E">
+<meta name="theme-color" content="#dde6f3">
+<meta property="og:type" content="article">
+<meta property="og:title" content="moniRAM — Desktop Session Manager · Case Study">
+<meta property="og:description" content="27,700-line legacy WPF app rebuilt as a Tauri 2 + Rust port — limits enforced by 107 Rust tests. Built by directing AI coding agents.">
+<meta property="og:url" content="https://elhaz.space/projects/moniram.html">
+<meta property="og:image" content="https://elhaz.space/assets/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@600;800&family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;1,6..72,400&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{
+  --paper:#dde6f3;--paper-2:#d4dff0;--ink:#2545d3;--ink-soft:#4a63c9;--ink-faint:#8fa3d6;
+  --rule:#b3c2e2;--maroon:#641f3c;--maroon-text:#f2d9e2;--cyan:#19b9d4;
+  --display:"Archivo",system-ui,sans-serif;--serif:"Newsreader",Georgia,serif;--mono:"IBM Plex Mono",ui-monospace,monospace;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{background:var(--paper);color:var(--ink);font-family:var(--serif);font-size:17px;line-height:1.6;-webkit-font-smoothing:antialiased;position:relative}
+body::before{content:"";position:fixed;inset:0;pointer-events:none;z-index:1;opacity:.65;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='240' height='240'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2'/%3E%3CfeColorMatrix values='0 0 0 0 0.55 0 0 0 0 0.62 0 0 0 0 0.8 0 0 0 0.36 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E")}
+.frame{position:relative;z-index:2;max-width:1500px;margin:28px auto;border:1px solid var(--rule)}
+@media(max-width:1560px){.frame{margin:18px}}
+::selection{background:var(--ink);color:var(--paper)}
+a{color:inherit}
+.label{font-family:var(--mono);font-size:13px;letter-spacing:.32em;text-transform:uppercase;font-weight:500}
+.label-sm{font-family:var(--mono);font-size:11px;letter-spacing:.26em;text-transform:uppercase}
+nav{display:grid;grid-template-columns:1.2fr 1fr 1fr;border-bottom:1px solid var(--rule)}
+nav>*{padding:26px 28px;border-right:1px solid var(--rule)}
+nav>*:last-child{border-right:none}
+.brand{font-family:var(--display);font-weight:800;font-size:26px;line-height:1.02;text-transform:uppercase;text-decoration:none;display:block}
+.nav-link{display:flex;align-items:center;text-decoration:none;color:var(--ink);transition:color .15s}
+.nav-link:hover,.nav-link:focus-visible{color:var(--cyan)}
+@media(max-width:880px){nav{grid-template-columns:1fr 1fr}nav>*{padding:16px 18px}.brand-cell{grid-column:1/-1;border-bottom:1px solid var(--rule)}}
+.hero{padding:78px 24px 64px;text-align:center;border-bottom:1px solid var(--rule)}
+.hero .label{color:var(--ink-soft);display:inline-flex;align-items:center;gap:14px}
+.hero .label::before,.hero .label::after{content:"";width:5px;height:5px;background:var(--ink-soft);display:inline-block}
+h1{font-family:var(--display);font-weight:800;text-transform:uppercase;font-size:clamp(36px,5.4vw,70px);line-height:1.02;margin:24px auto 26px;max-width:18ch}
+.hero-sub{font-size:19px;line-height:1.65;color:var(--ink-soft);max-width:60ch;margin:0 auto}
+.hero-sub strong{font-weight:500;color:var(--ink)}
+.meta{display:grid;grid-template-columns:repeat(4,1fr);border-bottom:1px solid var(--rule)}
+.meta>div{padding:18px 28px;border-right:1px solid var(--rule)}
+.meta>div:last-child{border-right:none}
+.meta .label-sm{color:var(--ink-faint);display:block;margin-bottom:6px}
+.meta .val{font-family:var(--mono);font-size:13.5px;letter-spacing:.06em;color:var(--ink)}
+@media(max-width:880px){.meta{grid-template-columns:1fr 1fr}.meta>div:nth-child(2n){border-right:none}.meta>div{border-bottom:1px solid var(--rule)}.meta>div:nth-last-child(-n+2){border-bottom:none}}
+section{border-bottom:1px solid var(--rule)}
+.sec-title{padding:26px 28px 22px;border-bottom:1px solid var(--rule)}
+.sec-title h2{font-family:var(--display);font-weight:800;font-size:22px;letter-spacing:.12em;text-transform:uppercase}
+.prose{padding:32px 28px 40px;max-width:900px}
+.prose p{color:var(--ink-soft);margin-bottom:16px;max-width:72ch}
+.prose p strong{color:var(--ink);font-weight:500}
+.grid2{display:grid;grid-template-columns:1fr 1fr}
+@media(max-width:880px){.grid2{grid-template-columns:1fr}}
+.cell{padding:28px;border-right:1px solid var(--rule);border-bottom:1px solid var(--rule)}
+.cell:nth-child(2n){border-right:none}
+@media(max-width:880px){.cell{border-right:none}}
+.cell h3{font-family:var(--mono);font-weight:500;font-size:13px;letter-spacing:.26em;text-transform:uppercase;margin-bottom:10px}
+.cell p{font-size:16px;color:var(--ink-soft);line-height:1.6}
+.fig{padding:36px 28px}
+.fig+.fig{padding-top:0}
+.fig-frame{border:1px solid var(--ink);outline:2px solid var(--ink);outline-offset:3px;background:#0b0e14}
+.fig-frame img{display:block;width:100%;height:auto}
+.fig-frame.narrow{max-width:420px;margin:0 auto}
+.fig-cap{display:flex;justify-content:space-between;gap:18px;margin-top:14px;flex-wrap:wrap}
+.fig-cap .tag{font-family:var(--mono);font-size:12px;letter-spacing:.3em;text-transform:uppercase;color:var(--cyan);white-space:nowrap}
+.fig-cap p{font-size:15px;color:var(--ink-soft);max-width:70ch}
+.nums{display:grid;grid-template-columns:repeat(4,1fr)}
+@media(max-width:980px){.nums{grid-template-columns:repeat(2,1fr)}}
+.num{padding:26px 28px;border-right:1px solid var(--rule);border-bottom:1px solid var(--rule)}
+.num:nth-child(4n){border-right:none}
+@media(max-width:980px){.num:nth-child(2n){border-right:none!important}}
+.num b{font-family:var(--display);font-weight:800;font-size:30px;display:block;margin-bottom:4px}
+.num span{font-family:var(--mono);font-size:11px;letter-spacing:.2em;text-transform:uppercase;color:var(--ink-soft)}
+.note{padding:28px;background:rgba(255,255,255,.22)}
+.note p{font-size:16px;color:var(--ink-soft);max-width:80ch}
+.note p strong{color:var(--maroon);font-weight:500}
+.chips{display:flex;flex-wrap:wrap;padding:22px 28px 30px}
+.chip{font-family:var(--mono);font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--ink-soft);border:1px solid var(--rule);padding:6px 14px;margin:-1px 0 0 -1px}
+.contact{padding:64px 24px;text-align:center}
+.contact h2{font-family:var(--display);font-weight:800;font-size:clamp(26px,3.6vw,42px);letter-spacing:.02em;text-transform:uppercase;max-width:26ch;margin:0 auto 30px}
+.btn-row{display:flex;justify-content:center;flex-wrap:wrap;gap:14px}
+.btn{font-family:var(--mono);font-size:13px;letter-spacing:.22em;text-transform:uppercase;text-decoration:none;padding:14px 26px;border:1px solid var(--ink);transition:background .15s,color .15s}
+.btn:hover,.btn:focus-visible{background:var(--ink);color:var(--paper)}
+.btn.primary{background:var(--maroon);border-color:var(--maroon);color:var(--maroon-text)}
+.btn.primary:hover{background:#7a2849}
+.foot{display:grid;grid-template-columns:1fr 1fr 1fr;border-top:1px solid var(--rule)}
+.foot>*{padding:20px 28px;border-right:1px solid var(--rule);font-family:var(--mono);font-size:12px;letter-spacing:.22em;text-transform:uppercase;color:var(--ink-soft);text-decoration:none}
+.foot>*:last-child{border-right:none;text-align:right}
+.foot a:hover{color:var(--cyan)}
+:focus-visible{outline:2px solid var(--ink);outline-offset:2px}
+</style>
+</head>
+<body>
+<div class="frame">
+
+<nav>
+  <div class="brand-cell"><a class="brand" href="../index.html">Algimantas<br>Stuopelis</a></div>
+  <a class="nav-link label" href="../index.html#projects">← All Projects</a>
+  <a class="nav-link label" href="../index.html#contact">Contact</a>
+</nav>
+
+<header class="hero">
+  <span class="label">Case Study · Fig. 03</span>
+  <h1>moniRAM — Desktop Session Manager</h1>
+  <p class="hero-sub">A Windows desktop app for staging, launching, and supervising a fleet of game-client sessions on one machine — and a ground-up rebuild of a <strong>legacy .NET/WPF application into a Tauri 2 + Rust port</strong> with a deliberately smaller feature surface, enforced by tests rather than good intentions.</p>
+</header>
+
+<div class="meta">
+  <div><span class="label-sm">Year</span><span class="val">2025 — 2026</span></div>
+  <div><span class="label-sm">Role</span><span class="val">Architecture · Direction · QA</span></div>
+  <div><span class="label-sm">Status</span><span class="val">Working · port in progress</span></div>
+  <div><span class="label-sm">Method</span><span class="val">Built via AI coding agents</span></div>
+</div>
+
+<section>
+  <div class="sec-title"><h2>The Problem</h2></div>
+  <div class="prose">
+    <p>Running dozens of client sessions on one Windows machine creates an operations problem: staging launches without overwhelming the system, keeping per-session settings organized, storing credentials safely, and knowing which running processes belong to the app — and which don't.</p>
+    <p>The first answer was a legacy WPF application that grew for years and accumulated features that made it heavy and unmaintainable. The second answer — this project — was a rebuild that asked a harder question: <strong>which features deserve to survive the port?</strong></p>
+  </div>
+</section>
+
+<section>
+  <div class="sec-title"><h2>System Design</h2></div>
+  <div class="grid2">
+    <div class="cell"><h3>Two Generations, One Repo</h3><p>The legacy app: .NET 8 WPF, ~27,700 lines of C#. The port: Tauri 2 with a Rust backend and a React 18 + TypeScript frontend — smaller, faster, and intentionally less capable.</p></div>
+    <div class="cell"><h3>Encrypted Credential Vault</h3><p>Session credentials are encrypted at rest with Windows DPAPI and stored as blobs in a local SQLite vault — never as plaintext files, never leaving the machine.</p></div>
+    <div class="cell"><h3>One Command Bridge</h3><p>Instead of dozens of one-off Tauri commands, the frontend talks to a single generic dispatcher in Rust. New operations are added in one place, and the API boundary stays small enough to audit.</p></div>
+    <div class="cell"><h3>Supervision With Boundaries</h3><p>Kill and relaunch actions apply only to sessions the app itself launched and tracks — everything else on the machine is read-only visibility. State is file-backed, so the queue and tracked sessions survive restarts.</p></div>
+  </div>
+</section>
+
+<section>
+  <div class="sec-title"><h2>Figures</h2></div>
+  <div class="fig">
+    <div class="fig-frame"><img src="../assets/moniram-desktop.png" alt="moniRAM desktop view: session table with launch staging controls, status, and tracked session controls" loading="lazy"></div>
+    <div class="fig-cap"><span class="tag">Fig. 03·A — Desktop</span><p>The Tauri port's main view: session roster with per-row status, launch staging with stagger control, restore of a previous session, and tracked-session process controls. Identifiers redacted.</p></div>
+  </div>
+  <div class="fig">
+    <div class="fig-frame narrow"><img src="../assets/moniram-mobile.png" alt="moniRAM compact responsive layout with launch staging controls" loading="lazy"></div>
+    <div class="fig-cap"><span class="tag">Fig. 03·B — Compact</span><p>The same controls in a compact responsive layout — staging, queue control, and process management in a single column.</p></div>
+  </div>
+</section>
+
+<section>
+  <div class="sec-title"><h2>Engineering Note — The Hard Part</h2></div>
+  <div class="prose">
+    <p>The hard part wasn't porting features. It was <strong>constraining</strong> them. The legacy codebase contained capabilities that had no place in the rebuild, and a port that merely intends to leave them behind will reabsorb them one convenient commit at a time.</p>
+    <p>So the boundary is enforced mechanically: the Rust backend ships a test suite that <strong>scans the port for references to legacy modules</strong> and fails the build if any appear, rejects unsupported launch modes at the API boundary, verifies that lookups only touch public endpoints, and confirms that process controls can't reach anything the app didn't launch itself. The port's limits are a build contract, not a promise.</p>
+  </div>
+</section>
+
+<section>
+  <div class="sec-title"><h2>By the Numbers</h2></div>
+  <div class="nums">
+    <div class="num"><b>~49,200</b><span>lines across 163 files</span></div>
+    <div class="num"><b>27,700</b><span>lines of C# (legacy app)</span></div>
+    <div class="num"><b>7,900</b><span>lines of Rust (the port)</span></div>
+    <div class="num"><b>2</b><span>frontends: WPF/XAML + React/TS</span></div>
+    <div class="num"><b>107</b><span>Rust tests passing</span></div>
+    <div class="num"><b>57</b><span>Playwright smoke tests passing</span></div>
+    <div class="num"><b>3</b><span>release targets: EXE · MSI · NSIS</span></div>
+    <div class="num"><b>1</b><span>command bridge for the whole API</span></div>
+  </div>
+</section>
+
+<section>
+  <div class="note">
+    <p><strong>Honest state of the project:</strong> both generations build and pass their test suites, but the port is not at full parity — some legacy features are still being carried over, and others were deliberately left to die with the old codebase. Architecture, scoping decisions, and debugging are mine; the keystrokes belong to AI coding agents I directed.</p>
+  </div>
+  <div class="chips">
+    <span class="chip">Rust</span><span class="chip">Tauri 2</span><span class="chip">React 18</span><span class="chip">TypeScript</span><span class="chip">.NET 8</span><span class="chip">WPF</span><span class="chip">SQLite</span><span class="chip">Windows DPAPI</span><span class="chip">Playwright</span>
+  </div>
+</section>
+
+<section class="contact">
+  <h2>Legacy rebuilds are about what you refuse to carry over.</h2>
+  <div class="btn-row">
+    <a class="btn primary" href="mailto:AL@elhaz.space">Email Me</a>
+    <a class="btn" href="monihz.html">Previous Case Study →</a>
+  </div>
+</section>
+
+<div class="foot">
+  <span>Algimantas Stuopelis</span>
+  <a href="../index.html">← Back to Portfolio</a>
+  <span>© 2026</span>
+</div>
+
+</div>
+
+<script>
+/* decrypt-scramble hover (and once on load for nav) */
+(function(){
+  var GLYPHS="ABCDEFGHIJKLMNOPQRSTUVWXYZ#%&@$0123456789";
+  var reduce=window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  function scramble(el){
+    if(reduce)return;
+    var orig=el.dataset.text||el.textContent;
+    el.dataset.text=orig;
+    if(el._iv)clearInterval(el._iv);
+    var frame=0,steps=orig.length+6;
+    el._iv=setInterval(function(){
+      var out="";
+      for(var i=0;i<orig.length;i++){
+        if(orig[i]===" "){out+=" ";continue;}
+        out+= i<frame-3 ? orig[i] : GLYPHS[Math.floor(Math.random()*GLYPHS.length)];
+      }
+      el.textContent=out;
+      frame++;
+      if(frame>steps){clearInterval(el._iv);el.textContent=orig;}
+    },34);
+  }
+  document.querySelectorAll("nav .nav-link, .sec-title h2, h1, .cell h3").forEach(function(el){
+    el.dataset.text=el.textContent;
+    el.addEventListener("mouseenter",function(){scramble(el);});
+    el.addEventListener("focus",function(){scramble(el);});
+  });
+  if(!reduce){
+    document.querySelectorAll("nav .nav-link").forEach(function(el,i){
+      setTimeout(function(){scramble(el);},300+i*140);
+    });
+  }
+})();
+</script>
+</body>
+</html>

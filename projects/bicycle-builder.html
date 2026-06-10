@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Bicycle Builder — Parts &amp; Compatibility · Algimantas Stuopelis</title>
+<meta name="description" content="Case study: a Supabase-backed web + mobile app for planning bicycle builds — rule-driven part compatibility checks, derived tool requirements, and a data normalization pipeline.">
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' fill='%23dde6f3'/%3E%3Crect x='3' y='3' width='58' height='58' fill='none' stroke='%232545d3' stroke-width='4'/%3E%3Ctext x='32' y='43' font-family='monospace' font-size='30' font-weight='bold' fill='%232545d3' text-anchor='middle'%3EAS%3C/text%3E%3C/svg%3E">
+<meta name="theme-color" content="#dde6f3">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Bicycle Builder — Parts &amp; Compatibility · Case Study">
+<meta property="og:description" content="Rule-driven part compatibility engine on Supabase Postgres — catches mismatched standards before checkout. Built by directing AI coding agents.">
+<meta property="og:url" content="https://elhaz.space/projects/bicycle-builder.html">
+<meta property="og:image" content="https://elhaz.space/assets/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@600;800&family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;1,6..72,400&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{
+  --paper:#dde6f3;--paper-2:#d4dff0;--ink:#2545d3;--ink-soft:#4a63c9;--ink-faint:#8fa3d6;
+  --rule:#b3c2e2;--maroon:#641f3c;--maroon-text:#f2d9e2;--cyan:#19b9d4;
+  --display:"Archivo",system-ui,sans-serif;--serif:"Newsreader",Georgia,serif;--mono:"IBM Plex Mono",ui-monospace,monospace;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{background:var(--paper);color:var(--ink);font-family:var(--serif);font-size:17px;line-height:1.6;-webkit-font-smoothing:antialiased;position:relative}
+body::before{content:"";position:fixed;inset:0;pointer-events:none;z-index:1;opacity:.65;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='240' height='240'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2'/%3E%3CfeColorMatrix values='0 0 0 0 0.55 0 0 0 0 0.62 0 0 0 0 0.8 0 0 0 0.36 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E")}
+.frame{position:relative;z-index:2;max-width:1500px;margin:28px auto;border:1px solid var(--rule)}
+@media(max-width:1560px){.frame{margin:18px}}
+::selection{background:var(--ink);color:var(--paper)}
+a{color:inherit}
+.label{font-family:var(--mono);font-size:13px;letter-spacing:.32em;text-transform:uppercase;font-weight:500}
+.label-sm{font-family:var(--mono);font-size:11px;letter-spacing:.26em;text-transform:uppercase}
+nav{display:grid;grid-template-columns:1.2fr 1fr 1fr;border-bottom:1px solid var(--rule)}
+nav>*{padding:26px 28px;border-right:1px solid var(--rule)}
+nav>*:last-child{border-right:none}
+.brand{font-family:var(--display);font-weight:800;font-size:26px;line-height:1.02;text-transform:uppercase;text-decoration:none;display:block}
+.nav-link{display:flex;align-items:center;text-decoration:none;color:var(--ink);transition:color .15s}
+.nav-link:hover,.nav-link:focus-visible{color:var(--cyan)}
+@media(max-width:880px){nav{grid-template-columns:1fr 1fr}nav>*{padding:16px 18px}.brand-cell{grid-column:1/-1;border-bottom:1px solid var(--rule)}}
+.hero{padding:78px 24px 64px;text-align:center;border-bottom:1px solid var(--rule)}
+.hero .label{color:var(--ink-soft);display:inline-flex;align-items:center;gap:14px}
+.hero .label::before,.hero .label::after{content:"";width:5px;height:5px;background:var(--ink-soft);display:inline-block}
+h1{font-family:var(--display);font-weight:800;text-transform:uppercase;font-size:clamp(36px,5.4vw,70px);line-height:1.02;margin:24px auto 26px;max-width:18ch}
+.hero-sub{font-size:19px;line-height:1.65;color:var(--ink-soft);max-width:60ch;margin:0 auto}
+.hero-sub strong{font-weight:500;color:var(--ink)}
+.meta{display:grid;grid-template-columns:repeat(4,1fr);border-bottom:1px solid var(--rule)}
+.meta>div{padding:18px 28px;border-right:1px solid var(--rule)}
+.meta>div:last-child{border-right:none}
+.meta .label-sm{color:var(--ink-faint);display:block;margin-bottom:6px}
+.meta .val{font-family:var(--mono);font-size:13.5px;letter-spacing:.06em;color:var(--ink)}
+@media(max-width:880px){.meta{grid-template-columns:1fr 1fr}.meta>div:nth-child(2n){border-right:none}.meta>div{border-bottom:1px solid var(--rule)}.meta>div:nth-last-child(-n+2){border-bottom:none}}
+section{border-bottom:1px solid var(--rule)}
+.sec-title{padding:26px 28px 22px;border-bottom:1px solid var(--rule)}
+.sec-title h2{font-family:var(--display);font-weight:800;font-size:22px;letter-spacing:.12em;text-transform:uppercase}
+.prose{padding:32px 28px 40px;max-width:900px}
+.prose p{color:var(--ink-soft);margin-bottom:16px;max-width:72ch}
+.prose p strong{color:var(--ink);font-weight:500}
+.grid2{display:grid;grid-template-columns:1fr 1fr}
+@media(max-width:880px){.grid2{grid-template-columns:1fr}}
+.cell{padding:28px;border-right:1px solid var(--rule);border-bottom:1px solid var(--rule)}
+.cell:nth-child(2n){border-right:none}
+@media(max-width:880px){.cell{border-right:none}}
+.cell h3{font-family:var(--mono);font-weight:500;font-size:13px;letter-spacing:.26em;text-transform:uppercase;margin-bottom:10px}
+.cell p{font-size:16px;color:var(--ink-soft);line-height:1.6}
+.fig{padding:36px 28px}
+.fig+.fig{padding-top:0}
+.fig-frame{border:1px solid var(--ink);outline:2px solid var(--ink);outline-offset:3px;background:#0b0e14}
+.fig-frame img{display:block;width:100%;height:auto}
+.fig-cap{display:flex;justify-content:space-between;gap:18px;margin-top:14px;flex-wrap:wrap}
+.fig-cap .tag{font-family:var(--mono);font-size:12px;letter-spacing:.3em;text-transform:uppercase;color:var(--cyan);white-space:nowrap}
+.fig-cap p{font-size:15px;color:var(--ink-soft);max-width:70ch}
+.nums{display:grid;grid-template-columns:repeat(4,1fr)}
+@media(max-width:980px){.nums{grid-template-columns:repeat(2,1fr)}}
+.num{padding:26px 28px;border-right:1px solid var(--rule);border-bottom:1px solid var(--rule)}
+.num:nth-child(4n){border-right:none}
+@media(max-width:980px){.num:nth-child(2n){border-right:none!important}}
+.num b{font-family:var(--display);font-weight:800;font-size:30px;display:block;margin-bottom:4px}
+.num span{font-family:var(--mono);font-size:11px;letter-spacing:.2em;text-transform:uppercase;color:var(--ink-soft)}
+.note{padding:28px;background:rgba(255,255,255,.22)}
+.note p{font-size:16px;color:var(--ink-soft);max-width:80ch}
+.note p strong{color:var(--maroon);font-weight:500}
+.chips{display:flex;flex-wrap:wrap;padding:22px 28px 30px}
+.chip{font-family:var(--mono);font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--ink-soft);border:1px solid var(--rule);padding:6px 14px;margin:-1px 0 0 -1px}
+.contact{padding:64px 24px;text-align:center}
+.contact h2{font-family:var(--display);font-weight:800;font-size:clamp(26px,3.6vw,42px);letter-spacing:.02em;text-transform:uppercase;max-width:26ch;margin:0 auto 30px}
+.btn-row{display:flex;justify-content:center;flex-wrap:wrap;gap:14px}
+.btn{font-family:var(--mono);font-size:13px;letter-spacing:.22em;text-transform:uppercase;text-decoration:none;padding:14px 26px;border:1px solid var(--ink);transition:background .15s,color .15s}
+.btn:hover,.btn:focus-visible{background:var(--ink);color:var(--paper)}
+.btn.primary{background:var(--maroon);border-color:var(--maroon);color:var(--maroon-text)}
+.btn.primary:hover{background:#7a2849}
+.foot{display:grid;grid-template-columns:1fr 1fr 1fr;border-top:1px solid var(--rule)}
+.foot>*{padding:20px 28px;border-right:1px solid var(--rule);font-family:var(--mono);font-size:12px;letter-spacing:.22em;text-transform:uppercase;color:var(--ink-soft);text-decoration:none}
+.foot>*:last-child{border-right:none;text-align:right}
+.foot a:hover{color:var(--cyan)}
+:focus-visible{outline:2px solid var(--ink);outline-offset:2px}
+</style>
+</head>
+<body>
+<div class="frame">
+
+<nav>
+  <div class="brand-cell"><a class="brand" href="../index.html">Algimantas<br>Stuopelis</a></div>
+  <a class="nav-link label" href="../index.html#projects">← All Projects</a>
+  <a class="nav-link label" href="../index.html#contact">Contact</a>
+</nav>
+
+<header class="hero">
+  <span class="label">Case Study · Fig. 04</span>
+  <h1>Bicycle Builder — Parts &amp; Compatibility</h1>
+  <p class="hero-sub">A web + mobile app for planning a bicycle build part by part — with a <strong>rule-driven compatibility engine</strong> that catches mismatched standards before money is spent, and a data pipeline that turns messy manufacturer specs into something rules can actually run on. The cycling sibling of VelotFit: same domain obsession, different problem.</p>
+</header>
+
+<div class="meta">
+  <div><span class="label-sm">Year</span><span class="val">2026</span></div>
+  <div><span class="label-sm">Role</span><span class="val">Architecture · Direction · QA</span></div>
+  <div><span class="label-sm">Status</span><span class="val">Prototype · web flows working</span></div>
+  <div><span class="label-sm">Method</span><span class="val">Built via AI coding agents</span></div>
+</div>
+
+<section>
+  <div class="sec-title"><h2>The Problem</h2></div>
+  <div class="prose">
+    <p>Building a bicycle from individual components is a compatibility minefield. Bottom bracket standards, freehub bodies, brake mounts — the failure mode is always the same: the mismatch is discovered <strong>at the workbench, not at checkout</strong>. And even when the parts fit, every install step quietly assumes workshop tools you may not own.</p>
+    <p>The app tracks what you have, what's missing, what doesn't fit together, and which tools the build will demand — before anything is ordered.</p>
+  </div>
+</section>
+
+<section>
+  <div class="sec-title"><h2>System Design</h2></div>
+  <div class="grid2">
+    <div class="cell"><h3>Monorepo, Two Platforms</h3><p>pnpm workspaces split into apps/web (Next.js 16, React 19), apps/mobile (Expo, React Native), and shared packages for database types, theme tokens, and the scraper — one source of truth, two frontends.</p></div>
+    <div class="cell"><h3>Rules in the Database</h3><p>Compatibility isn't hard-coded. Rules live in a Postgres table and compare part spec keys with operators like equals, in, and not_in — new rules are data entry, not a code release.</p></div>
+    <div class="cell"><h3>Row-Level Security</h3><p>Supabase RLS scopes every user's builds to their own account while the parts and tools catalogs stay publicly readable — authorization enforced in the database, not sprinkled through app code.</p></div>
+    <div class="cell"><h3>Derived Tool Requirements</h3><p>Selected parts imply required workshop tools — a cassette pulls in a chain whip and torque wrench automatically. The build view doubles as a shopping list for the workbench.</p></div>
+  </div>
+</section>
+
+<section>
+  <div class="sec-title"><h2>Figures</h2></div>
+  <div class="fig">
+    <div class="fig-frame"><img src="../assets/bicycle-build.jpg" alt="Bicycle Builder build view: completeness check passing while the compatibility engine flags a BSA frame against a BB86 bottom bracket" loading="lazy"></div>
+    <div class="fig-cap"><span class="tag">Fig. 04·A — Build View</span><p>The point of the whole app in one screen: the build is complete, but the engine flags a BSA-threaded frame against a BB86 press-fit bottom bracket — exactly the mistake that otherwise gets discovered with the parts already on the bench.</p></div>
+  </div>
+  <div class="fig">
+    <div class="fig-frame"><img src="../assets/bicycle-catalog.jpg" alt="Bicycle Builder parts catalog with category and brand filters across 286 seeded components" loading="lazy"></div>
+    <div class="fig-cap"><span class="tag">Fig. 04·B — Parts Catalog</span><p>286 components across 18 categories and 30+ brands, seeded by a scraper pipeline that normalizes each source's spec format into canonical keys.</p></div>
+  </div>
+  <div class="fig">
+    <div class="fig-frame"><img src="../assets/bicycle-tools.jpg" alt="Bicycle Builder derived tool requirements grouped by install step" loading="lazy"></div>
+    <div class="fig-cap"><span class="tag">Fig. 04·C — Tool Requirements</span><p>Tools derived from the selected parts, grouped by job — install brakes, install cassette, check wear — so the build plan covers the workbench too.</p></div>
+  </div>
+</section>
+
+<section>
+  <div class="sec-title"><h2>Engineering Note — The Hard Part</h2></div>
+  <div class="prose">
+    <p>Compatibility rules only work if every part speaks the same language — and manufacturer data doesn't. The same physical property arrives as different field names, units, and formats depending on the source. Run rules on raw data and they silently miss the exact mismatches they exist to catch.</p>
+    <p>The fix is a <strong>normalization pipeline</strong>: scraper modules per source map raw spec names into canonical category-specific keys, validate every normalized part with Zod schemas, and emit idempotent SQL upserts. Parts store their specs as JSONB, so categories stay flexible — but the keys the rules depend on are guaranteed. The compatibility engine then only ever reasons over clean, predictable data, and its 17 tests can actually mean something.</p>
+  </div>
+</section>
+
+<section>
+  <div class="sec-title"><h2>By the Numbers</h2></div>
+  <div class="nums">
+    <div class="num"><b>~24,300</b><span>lines across the monorepo</span></div>
+    <div class="num"><b>2</b><span>frontends: Next.js web + Expo mobile</span></div>
+    <div class="num"><b>286</b><span>parts seeded via the scraper pipeline</span></div>
+    <div class="num"><b>52</b><span>workshop tools across 10 categories</span></div>
+    <div class="num"><b>17</b><span>compatibility tests passing</span></div>
+    <div class="num"><b>6</b><span>database migrations</span></div>
+    <div class="num"><b>6</b><span>scraper source modules</span></div>
+    <div class="num"><b>12</b><span>web pages &amp; API routes</span></div>
+  </div>
+</section>
+
+<section>
+  <div class="note">
+    <p><strong>Honest state of the project:</strong> a prototype. The web build compiles and the compatibility suite passes; the mobile app has TypeScript errors outstanding, web lint isn't clean yet, and the AI consult page is a placeholder. Listed as-is because the architecture is the point. Architecture, data modeling, and debugging are mine; the keystrokes belong to AI coding agents I directed.</p>
+  </div>
+  <div class="chips">
+    <span class="chip">Next.js 16</span><span class="chip">React 19</span><span class="chip">TypeScript</span><span class="chip">Supabase</span><span class="chip">Postgres</span><span class="chip">RLS</span><span class="chip">Expo</span><span class="chip">React Native</span><span class="chip">Tailwind 4</span><span class="chip">Zod</span>
+  </div>
+</section>
+
+<section class="contact">
+  <h2>Good rules need clean data. Clean data needs a pipeline.</h2>
+  <div class="btn-row">
+    <a class="btn primary" href="mailto:AL@elhaz.space">Email Me</a>
+    <a class="btn" href="monihz.html">Next Case Study →</a>
+  </div>
+</section>
+
+<div class="foot">
+  <span>Algimantas Stuopelis</span>
+  <a href="../index.html">← Back to Portfolio</a>
+  <span>© 2026</span>
+</div>
+
+</div>
+
+<script>
+/* decrypt-scramble hover (and once on load for nav) */
+(function(){
+  var GLYPHS="ABCDEFGHIJKLMNOPQRSTUVWXYZ#%&@$0123456789";
+  var reduce=window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  function scramble(el){
+    if(reduce)return;
+    var orig=el.dataset.text||el.textContent;
+    el.dataset.text=orig;
+    if(el._iv)clearInterval(el._iv);
+    var frame=0,steps=orig.length+6;
+    el._iv=setInterval(function(){
+      var out="";
+      for(var i=0;i<orig.length;i++){
+        if(orig[i]===" "){out+=" ";continue;}
+        out+= i<frame-3 ? orig[i] : GLYPHS[Math.floor(Math.random()*GLYPHS.length)];
+      }
+      el.textContent=out;
+      frame++;
+      if(frame>steps){clearInterval(el._iv);el.textContent=orig;}
+    },34);
+  }
+  document.querySelectorAll("nav .nav-link, .sec-title h2, h1, .cell h3").forEach(function(el){
+    el.dataset.text=el.textContent;
+    el.addEventListener("mouseenter",function(){scramble(el);});
+    el.addEventListener("focus",function(){scramble(el);});
+  });
+  if(!reduce){
+    document.querySelectorAll("nav .nav-link").forEach(function(el,i){
+      setTimeout(function(){scramble(el);},300+i*140);
+    });
+  }
+})();
+</script>
+</body>
+</html>

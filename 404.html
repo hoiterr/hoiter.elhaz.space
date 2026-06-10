@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>404 — Signal Lost · Algimantas Stuopelis</title>
+<meta name="robots" content="noindex">
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' fill='%23dde6f3'/%3E%3Crect x='3' y='3' width='58' height='58' fill='none' stroke='%232545d3' stroke-width='4'/%3E%3Ctext x='32' y='43' font-family='monospace' font-size='30' font-weight='bold' fill='%232545d3' text-anchor='middle'%3EAS%3C/text%3E%3C/svg%3E">
+<meta name="theme-color" content="#dde6f3">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@800&family=Newsreader:opsz,wght@6..72,400&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{--paper:#dde6f3;--ink:#2545d3;--ink-soft:#4a63c9;--rule:#b3c2e2;--maroon:#641f3c;--maroon-text:#f2d9e2;
+--display:"Archivo",system-ui,sans-serif;--serif:"Newsreader",Georgia,serif;--mono:"IBM Plex Mono",ui-monospace,monospace}
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:var(--paper);color:var(--ink);font-family:var(--serif);min-height:100vh;display:flex;align-items:center;justify-content:center;position:relative}
+body::before{content:"";position:fixed;inset:0;pointer-events:none;z-index:1;opacity:.65;
+background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='240' height='240'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2'/%3E%3CfeColorMatrix values='0 0 0 0 0.55 0 0 0 0 0.62 0 0 0 0 0.8 0 0 0 0.36 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E")}
+.box{position:relative;z-index:2;text-align:center;border:1px solid var(--rule);padding:70px 60px;max-width:620px;margin:20px}
+.code{font-family:var(--mono);font-size:13px;letter-spacing:.32em;text-transform:uppercase;color:var(--ink-soft)}
+h1{font-family:var(--display);font-weight:800;font-size:clamp(48px,9vw,96px);text-transform:uppercase;line-height:1;margin:18px 0 14px}
+p{color:var(--ink-soft);font-size:18px;margin-bottom:34px}
+a.btn{font-family:var(--mono);font-size:13px;letter-spacing:.22em;text-transform:uppercase;text-decoration:none;color:var(--maroon-text);background:var(--maroon);padding:14px 26px;border:1px solid var(--maroon);transition:background .15s}
+a.btn:hover{background:#7a2849}
+</style>
+</head>
+<body>
+<div class="box">
+  <span class="code">Error · Page Not Found</span>
+  <h1 id="t">Signal Lost</h1>
+  <p>This page doesn't report to the dashboard. The rest of the fleet is still online.</p>
+  <a class="btn" href="/">← Back to Base</a>
+</div>
+<script>
+(function(){
+  var GLYPHS="ABCDEFGHIJKLMNOPQRSTUVWXYZ#%&@$0123456789";
+  if(window.matchMedia("(prefers-reduced-motion: reduce)").matches)return;
+  var el=document.getElementById("t"),orig=el.textContent,frame=0,steps=orig.length+6;
+  var iv=setInterval(function(){
+    var out="";
+    for(var i=0;i<orig.length;i++){
+      if(orig[i]===" "){out+=" ";continue;}
+      out+= i<frame-3 ? orig[i] : GLYPHS[Math.floor(Math.random()*GLYPHS.length)];
+    }
+    el.textContent=out;frame++;
+    if(frame>steps){clearInterval(iv);el.textContent=orig;}
+  },50);
+})();
+</script>
+</body>
+</html>
