@@ -25,8 +25,8 @@
 *{margin:0;padding:0;box-sizing:border-box}
 html{scroll-behavior:smooth}
 body{background:var(--paper);color:var(--ink);font-family:var(--serif);font-size:17px;line-height:1.6;-webkit-font-smoothing:antialiased;position:relative}
-body::before{content:"";position:fixed;inset:0;pointer-events:none;z-index:1;opacity:.65;
-  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='240' height='240'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2'/%3E%3CfeColorMatrix values='0 0 0 0 0.55 0 0 0 0 0.62 0 0 0 0 0.8 0 0 0 0.36 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E")}
+body::before{content:"";position:fixed;inset:0;pointer-events:none;z-index:1;opacity:.9;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='240' height='240'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2'/%3E%3CfeColorMatrix values='0 0 0 0 0.40 0 0 0 0 0.46 0 0 0 0 0.66 0 0 0 0.62 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E")}
 .frame{position:relative;z-index:2;max-width:1500px;margin:28px auto;border:1px solid var(--rule)}
 @media(max-width:1560px){.frame{margin:18px}}
 ::selection{background:var(--ink);color:var(--paper)}
@@ -96,6 +96,11 @@ section{border-bottom:1px solid var(--rule)}
 .foot>*:last-child{border-right:none;text-align:right}
 .foot a:hover{color:var(--cyan)}
 :focus-visible{outline:2px solid var(--ink);outline-offset:2px}
+.reveal{opacity:0;transform:translateY(22px);transition:opacity .65s ease,transform .65s ease}
+.reveal.in{opacity:1;transform:none}
+.cursor-glow{position:fixed;inset:0;pointer-events:none;z-index:1;opacity:0;transition:opacity .35s ease;
+  background:radial-gradient(200px circle at var(--mx,-999px) var(--my,-999px),rgba(37,69,211,.13),transparent 62%)}
+@media(prefers-reduced-motion:reduce){.reveal{opacity:1;transform:none;transition:none}}
 </style>
 </head>
 <body>
@@ -151,8 +156,8 @@ section{border-bottom:1px solid var(--rule)}
     <div class="fig-cap"><span class="tag">Fig. 02·B — Event Log</span><p>The reconciled event stream — every row carries its timestamp, client, action, delta, and which signal path produced it.</p></div>
   </div>
   <div class="fig">
-    <div class="fig-frame"><img src="../assets/monihz-charts.png" alt="moniHZ charts tab: cumulative output over time across the fleet" loading="lazy"></div>
-    <div class="fig-cap"><span class="tag">Fig. 02·C — Charts</span><p>Cumulative output over time, fleet-wide. The spikes are why alerting exists.</p></div>
+    <div class="fig-frame"><img src="../assets/monihz-accounts.png" alt="moniHZ accounts view: per-client roster with health badges, uptime, last-seen, and per-client metrics and controls" loading="lazy"></div>
+    <div class="fig-cap"><span class="tag">Fig. 02·C — Per-Client Roster</span><p>Every client as its own card — health badge (live / stale / missing), uptime, last-seen, per-client metrics, and stop/kill controls. The roster down the side scales to the full fleet. Client names redacted.</p></div>
   </div>
 </section>
 
@@ -209,7 +214,6 @@ section{border-bottom:1px solid var(--rule)}
   var GLYPHS="ABCDEFGHIJKLMNOPQRSTUVWXYZ#%&@$0123456789";
   var reduce=window.matchMedia("(prefers-reduced-motion: reduce)").matches;
   function scramble(el){
-    if(reduce)return;
     var orig=el.dataset.text||el.textContent;
     el.dataset.text=orig;
     if(el._iv)clearInterval(el._iv);
@@ -225,7 +229,7 @@ section{border-bottom:1px solid var(--rule)}
       if(frame>steps){clearInterval(el._iv);el.textContent=orig;}
     },34);
   }
-  document.querySelectorAll("nav .nav-link, .sec-title h2, h1, .cell h3").forEach(function(el){
+  document.querySelectorAll("nav .nav-link, .sec-title h2").forEach(function(el){
     el.dataset.text=el.textContent;
     el.addEventListener("mouseenter",function(){scramble(el);});
     el.addEventListener("focus",function(){scramble(el);});
@@ -234,6 +238,66 @@ section{border-bottom:1px solid var(--rule)}
     document.querySelectorAll("nav .nav-link").forEach(function(el,i){
       setTimeout(function(){scramble(el);},300+i*140);
     });
+  }
+})();
+
+/* scroll-reveal + cursor glow + count-up */
+(function(){
+  var reduce=window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  var hasIO="IntersectionObserver" in window;
+
+  /* reveal */
+  var targets=document.querySelectorAll("section, .grid2 .cell, .fig, .num");
+  if(reduce||!hasIO){
+    targets.forEach(function(el){el.classList.add("in");});
+  }else{
+    targets.forEach(function(el){el.classList.add("reveal");});
+    var io=new IntersectionObserver(function(es){
+      es.forEach(function(e){ if(e.isIntersecting){e.target.classList.add("in");io.unobserve(e.target);} });
+    },{threshold:.12,rootMargin:"0px 0px -8% 0px"});
+    targets.forEach(function(el){io.observe(el);});
+  }
+
+  /* count-up on .num b */
+  function countUp(el){
+    var raw=(el.dataset.val||el.textContent).trim();
+    el.dataset.val=raw;
+    var m=raw.match(/^([^\d]*)([\d,\.]+)(.*)$/);
+    if(!m){return;}
+    var pre=m[1], numStr=m[2], suf=m[3];
+    var target=parseFloat(numStr.replace(/,/g,""));
+    var comma=numStr.indexOf(",")>-1;
+    function fmt(n){n=Math.round(n);return comma?n.toLocaleString("en-US"):String(n);}
+    var dur=1100,start=null;
+    function step(ts){
+      if(!start)start=ts;
+      var p=Math.min((ts-start)/dur,1), e=1-Math.pow(1-p,3);
+      el.textContent=pre+fmt(target*e)+suf;
+      if(p<1)requestAnimationFrame(step); else el.textContent=pre+fmt(target)+suf;
+    }
+    requestAnimationFrame(step);
+  }
+  var nums=document.querySelectorAll(".num b");
+  if(!reduce&&hasIO){
+    var io2=new IntersectionObserver(function(es){
+      es.forEach(function(e){ if(e.isIntersecting){countUp(e.target);io2.unobserve(e.target);} });
+    },{threshold:.6});
+    nums.forEach(function(el){io2.observe(el);});
+  }
+
+  /* cursor glow */
+  if(window.matchMedia("(pointer:fine)").matches){
+    var glow=document.createElement("div");glow.className="cursor-glow";document.body.appendChild(glow);
+    var raf=null;
+    window.addEventListener("mousemove",function(ev){
+      if(raf)return;
+      raf=requestAnimationFrame(function(){
+        glow.style.setProperty("--mx",ev.clientX+"px");
+        glow.style.setProperty("--my",ev.clientY+"px");
+        glow.style.opacity="1";raf=null;
+      });
+    });
+    document.addEventListener("mouseleave",function(){glow.style.opacity="0";});
   }
 })();
 </script>
