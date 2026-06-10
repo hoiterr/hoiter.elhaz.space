@@ -27,6 +27,10 @@
   --maroon:#641f3c;
   --maroon-text:#f2d9e2;
   --cyan:#19b9d4;
+  --purple:#534ab7;
+  --purple-fill:#e3e0f6;
+  --purple-ink:#3c3489;
+  --purple-rule:#c3bcec;
   --display:"Archivo",system-ui,sans-serif;
   --serif:"Newsreader",Georgia,serif;
   --mono:"IBM Plex Mono",ui-monospace,monospace;
@@ -146,7 +150,8 @@ section{border-bottom:1px solid var(--rule)}
 .proj-main p{color:var(--ink-soft);max-width:68ch;margin-bottom:12px}
 .proj-main p b{font-family:var(--mono);font-weight:500;font-size:12px;letter-spacing:.22em;text-transform:uppercase;color:var(--ink);margin-right:8px}
 .chips{margin-top:18px;display:flex;flex-wrap:wrap;gap:0}
-.chip{font-family:var(--mono);font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--ink-soft);border:1px solid var(--rule);padding:6px 14px;margin:-1px 0 0 -1px}
+.chip{font-family:var(--mono);font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--purple-ink);background:var(--purple-fill);border:1px solid var(--purple-rule);padding:6px 14px;margin:-1px 0 0 -1px;transition:background .15s,color .15s}
+.chip:hover{background:var(--purple);color:#fff}
 .case-link{display:inline-block;margin-top:20px;font-family:var(--mono);font-size:12px;letter-spacing:.22em;text-transform:uppercase;text-decoration:none;color:var(--paper);background:var(--ink);border:1px solid var(--ink);padding:10px 18px;transition:background .15s}
 .case-link:hover,.case-link:focus-visible{background:#16308f}
 .proj-note{padding:18px 28px;font-family:var(--mono);font-size:11px;letter-spacing:.2em;text-transform:uppercase;color:var(--ink-faint);border-top:1px solid var(--rule)}

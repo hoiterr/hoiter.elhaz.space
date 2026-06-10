@@ -20,6 +20,7 @@
 :root{
   --paper:#dde6f3;--paper-2:#d4dff0;--ink:#2545d3;--ink-soft:#4a63c9;--ink-faint:#8fa3d6;
   --rule:#b3c2e2;--maroon:#641f3c;--maroon-text:#f2d9e2;--cyan:#19b9d4;
+  --purple:#534ab7;--purple-fill:#e3e0f6;--purple-ink:#3c3489;--purple-rule:#c3bcec;
   --display:"Archivo",system-ui,sans-serif;--serif:"Newsreader",Georgia,serif;--mono:"IBM Plex Mono",ui-monospace,monospace;
 }
 *{margin:0;padding:0;box-sizing:border-box}
@@ -84,7 +85,8 @@ section{border-bottom:1px solid var(--rule)}
 .note p{font-size:16px;color:var(--ink-soft);max-width:80ch}
 .note p strong{color:var(--maroon);font-weight:500}
 .chips{display:flex;flex-wrap:wrap;padding:22px 28px 30px}
-.chip{font-family:var(--mono);font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--ink-soft);border:1px solid var(--rule);padding:6px 14px;margin:-1px 0 0 -1px}
+.chip{font-family:var(--mono);font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--purple-ink);background:var(--purple-fill);border:1px solid var(--purple-rule);padding:6px 14px;margin:-1px 0 0 -1px;transition:background .15s,color .15s}
+.chip:hover{background:var(--purple);color:#fff}
 .contact{padding:64px 24px;text-align:center}
 .contact h2{font-family:var(--display);font-weight:800;font-size:clamp(26px,3.6vw,42px);letter-spacing:.02em;text-transform:uppercase;max-width:26ch;margin:0 auto 30px}
 .btn-row{display:flex;justify-content:center;flex-wrap:wrap;gap:14px}
